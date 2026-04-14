@@ -32,6 +32,7 @@ Thumbs.db
 !/storage/framework/views/.gitkeep
 
 /bootstrap/cache/*.php
+!/bootstrap/cache/.gitkeep
 
 # IDE
 .phpactor.json
