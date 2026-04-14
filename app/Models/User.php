@@ -17,6 +17,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'firebase_uid', // 🔥 penting untuk Firebase
+        'role',         // 🔥 penting untuk admin/user
     ];
 
     /**
@@ -34,4 +36,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Helper: cek apakah admin
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
 }
