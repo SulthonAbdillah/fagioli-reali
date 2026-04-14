@@ -60,17 +60,17 @@ Admin Dashboard
 
 <tbody>
 
-@if(!empty($products))
+@if($products->count())
 
-@foreach($products as $id => $product)
+@foreach($products as $product)
 
 <tr>
 
 <td>
 
-@if(isset($product['image']) && $product['image'])
+@if($product->image)
 
-<img src="{{ asset('storage/'.$product['image']) }}"
+<img src="{{ asset('storage/'.$product->image) }}"
 width="60"
 class="rounded">
 
@@ -84,37 +84,31 @@ class="rounded">
 </td>
 
 <td>
-
-{{ $product['name'] ?? '-' }}
-
+{{ $product->name }}
 </td>
 
 <td>
-
-Rp {{ number_format($product['price'] ?? 0) }}
-
+Rp {{ number_format($product->price) }}
 </td>
 
 <td>
 
 <span class="badge bg-secondary">
-
-{{ $product['stock'] ?? 0 }}
-
+{{ $product->stock }}
 </span>
 
 </td>
 
 <td>
 
-<a href="{{ route('products.edit',$id) }}"
+<a href="{{ route('products.edit', $product->id) }}"
 class="btn btn-sm btn-warning">
 
 <i class="bi bi-pencil"></i> Edit
 
 </a>
 
-<form action="{{ route('products.destroy',$id) }}"
+<form action="{{ route('products.destroy', $product->id) }}"
 method="POST"
 class="d-inline"
 onsubmit="return confirm('Delete this product?')">
@@ -141,9 +135,7 @@ onsubmit="return confirm('Delete this product?')">
 <tr>
 
 <td colspan="5" class="text-center">
-
 No products found
-
 </td>
 
 </tr>
