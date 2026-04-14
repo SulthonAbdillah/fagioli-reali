@@ -33,48 +33,17 @@ class RegisteredUserController extends Controller
             'password' => ['required','confirmed',Rules\Password::defaults()],
         ]);
 
-        try {
+        // 🔥 SIMPAN KE MYSQL SAJA (TANPA FIREBASE)
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-            /*
-            |--------------------------------------------------------------------------
-            | CREATE USER DI FIREBASE
-            |--------------------------------------------------------------------------
-            */
+        event(new Registered($user));
 
-            $firebaseAuth = app('firebase.auth');
+        Auth::login($user);
 
-            $firebaseUser = $firebaseAuth->createUser([
-                'email' => $request->email,
-                'password' => $request->password,
-                'displayName' => $request->name,
-            ]);
-
-            /*
-            |--------------------------------------------------------------------------
-            | SIMPAN USER KE DATABASE LARAVEL
-            |--------------------------------------------------------------------------
-            */
-
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'firebase_uid' => $firebaseUser->uid,
-                'role' => 'user',
-            ]);
-
-            event(new Registered($user));
-
-            Auth::login($user);
-
-            return redirect()->route('home');
-
-        } catch (\Throwable $e) {
-
-            return back()->withErrors([
-                'email' => 'Register gagal: '.$e->getMessage()
-            ])->withInput();
-
-        }
+        return redirect('/'); // atau route('home')
     }
 }

@@ -10,24 +10,28 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    /**
+     * Mass assignable attributes
+     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'firebase_uid',
-        'role',
     ];
 
+    /**
+     * Hidden attributes
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    /**
+     * Attribute casting
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 }

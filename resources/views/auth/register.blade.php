@@ -81,6 +81,15 @@ font-weight:600;
 margin-bottom:20px;
 }
 
+.error-box{
+background:#ffe5e5;
+color:#b30000;
+padding:10px;
+border-radius:8px;
+margin-bottom:15px;
+text-align:left;
+}
+
 </style>
 
 </head>
@@ -99,12 +108,23 @@ margin-bottom:20px;
 Join and start buying premium coffee beans
 </p>
 
+{{-- 🔥 ERROR MESSAGE --}}
+@if ($errors->any())
+    <div class="error-box">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <form method="POST" action="{{ route('register') }}">
 @csrf
 
-<input type="text" name="name" placeholder="Full Name" required>
+<input type="text" name="name" placeholder="Full Name" value="{{ old('name') }}" required>
 
-<input type="email" name="email" placeholder="Email" required>
+<input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
 
 <input type="password" name="password" placeholder="Password" required>
 
