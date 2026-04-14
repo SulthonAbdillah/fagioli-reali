@@ -3,69 +3,45 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
 
-    /*
-    |--------------------------------------------------------------------------
-    | ADMIN PRODUCT LIST
-    |--------------------------------------------------------------------------
-    */
-
+    // ===============================
+    // ADMIN PRODUCT LIST
+    // ===============================
     public function index()
     {
-        $database = app('firebase.database');
-
-        $products = $database
-            ->getReference('products')
-            ->getValue() ?? [];
+        $products = Product::latest()->get();
 
         return view('products.index', compact('products'));
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | USER PRODUCT CATALOG
-    |--------------------------------------------------------------------------
-    */
-
+    // ===============================
+    // USER PRODUCT CATALOG
+    // ===============================
     public function catalog()
     {
-        $database = app('firebase.database');
-
-        $products = $database
-            ->getReference('products')
-            ->getValue() ?? [];
+        $products = Product::all();
 
         return view('shop.products', compact('products'));
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | CREATE PRODUCT PAGE
-    |--------------------------------------------------------------------------
-    */
-
+    // ===============================
+    // CREATE PAGE
+    // ===============================
     public function create()
     {
         return view('products.create');
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | STORE PRODUCT
-    |--------------------------------------------------------------------------
-    */
-
+    // ===============================
+    // STORE
+    // ===============================
     public function store(Request $request)
     {
-        $database = app('firebase.database');
-
         $request->validate([
             'name' => 'required',
             'price' => 'required',
@@ -77,15 +53,12 @@ class ProductController extends Controller
         $imagePath = null;
 
         if ($request->hasFile('image')) {
-
             $file = $request->file('image');
-
             $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
-
             $imagePath = $file->storeAs('products', $filename, 'public');
         }
 
-        $database->getReference('products')->push([
+        Product::create([
             'name' => $request->name,
             'price' => $request->price,
             'stock' => $request->stock,
@@ -96,34 +69,22 @@ class ProductController extends Controller
         return redirect('/admin')->with('success', 'Product created successfully');
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | EDIT PRODUCT
-    |--------------------------------------------------------------------------
-    */
-
+    // ===============================
+    // EDIT
+    // ===============================
     public function edit($id)
     {
-        $database = app('firebase.database');
+        $product = Product::findOrFail($id);
 
-        $product = $database
-            ->getReference('products/' . $id)
-            ->getValue();
-
-        return view('products.edit', compact('product', 'id'));
+        return view('products.edit', compact('product'));
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE PRODUCT
-    |--------------------------------------------------------------------------
-    */
-
+    // ===============================
+    // UPDATE
+    // ===============================
     public function update(Request $request, $id)
     {
-        $database = app('firebase.database');
+        $product = Product::findOrFail($id);
 
         $request->validate([
             'name' => 'required',
@@ -133,7 +94,7 @@ class ProductController extends Controller
             'image' => 'nullable|image'
         ]);
 
-        $updateData = [
+        $data = [
             'name' => $request->name,
             'price' => $request->price,
             'stock' => $request->stock,
@@ -141,39 +102,23 @@ class ProductController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-
             $file = $request->file('image');
-
             $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
-
-            $imagePath = $file->storeAs('products', $filename, 'public');
-
-            $updateData['image'] = $imagePath;
+            $data['image'] = $file->storeAs('products', $filename, 'public');
         }
 
-        $database
-            ->getReference('products/' . $id)
-            ->update($updateData);
+        $product->update($data);
 
         return redirect('/admin')->with('success', 'Product updated successfully');
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | DELETE PRODUCT
-    |--------------------------------------------------------------------------
-    */
-
+    // ===============================
+    // DELETE
+    // ===============================
     public function destroy($id)
     {
-        $database = app('firebase.database');
-
-        $database
-            ->getReference('products/' . $id)
-            ->remove();
+        Product::destroy($id);
 
         return redirect('/admin')->with('success', 'Product deleted successfully');
     }
-
 }
