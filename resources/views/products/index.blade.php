@@ -1,3 +1,8 @@
+@php
+use Illuminate\Support\Str;
+@endphp
+
+
 @extends('layouts.admin')
 
 @section('content')
@@ -31,7 +36,7 @@ Add Product
 <tr>
 
 <td>
-    @if($product->image)
+    @if($product->image && Str::startsWith($product->image, 'http'))
         <img 
             src="{{ $product->image }}" 
             width="80" 
@@ -39,8 +44,10 @@ Add Product
             style="object-fit: cover; border-radius: 8px;">
     @else
         <img 
-            src="/images/no-image.jpg" 
-            width="80">
+            src="{{ asset('images/no-image.jpg') }}" 
+            width="80" 
+            height="80"
+            style="object-fit: cover; border-radius: 8px;">
     @endif
 </td>
 
