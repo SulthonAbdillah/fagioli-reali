@@ -35,6 +35,8 @@ class ProductController extends Controller
 
     public function create()
     {
+        dd(env('CLOUDINARY_CLOUD_NAME'));
+
         return view('products.create');
     }
 
