@@ -1,75 +1,74 @@
-<nav class="bg-black shadow-lg">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
 
-<div class="max-w-7xl mx-auto px-6">
-
-<div class="flex justify-between items-center h-16">
+<div class="container">
 
 <!-- LOGO -->
-<a href="/shop" class="text-2xl font-bold text-yellow-500">
+<a class="navbar-brand fw-bold text-warning" href="/shop">
 ☕ Fagioli Reali
 </a>
 
+<!-- TOGGLE MOBILE -->
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+<span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse" id="navbarNav">
 
 <!-- MENU -->
-<div class="flex items-center space-x-6">
+<ul class="navbar-nav me-auto">
 
 @if(Auth::user()->role === 'admin')
 
-<a href="/admin" class="text-gray-200 hover:text-yellow-500">
-Dashboard
-</a>
+<li class="nav-item">
+<a class="nav-link text-light" href="/admin">Dashboard</a>
+</li>
 
-<a href="/products" class="text-gray-200 hover:text-yellow-500">
-Products
-</a>
+<li class="nav-item">
+<a class="nav-link text-light" href="/products">Products</a>
+</li>
 
 @else
 
-<a href="/shop" class="text-gray-200 hover:text-yellow-500">
-Home
-</a>
+<li class="nav-item">
+<a class="nav-link text-light" href="/shop">Home</a>
+</li>
 
-<a href="/about" class="text-gray-200 hover:text-yellow-500">
-About
-</a>
+<li class="nav-item">
+<a class="nav-link text-light" href="/about">About</a>
+</li>
 
-<a href="/products-list" class="text-gray-200 hover:text-yellow-500">
-Products
-</a>
+<li class="nav-item">
+<a class="nav-link text-light" href="/products-list">Products</a>
+</li>
 
-<a href="/cart" class="text-gray-200 hover:text-yellow-500">
-Cart
-</a>
+<li class="nav-item">
+<a class="nav-link text-light" href="/cart">Cart</a>
+</li>
 
-<a href="/contact" class="text-gray-200 hover:text-yellow-500">
-Contact
-</a>
+<li class="nav-item">
+<a class="nav-link text-light" href="/contact">Contact</a>
+</li>
 
 @endif
 
-</div>
-
+</ul>
 
 <!-- USER -->
-<div class="flex items-center space-x-4">
+<div class="d-flex align-items-center">
 
-<span class="text-gray-300 text-sm">
+<span class="text-light me-3">
 {{ Auth::user()->name }}
 </span>
 
-<a href="{{ route('profile.edit') }}" class="text-gray-300 hover:text-yellow-500">
+<a href="{{ route('profile.edit') }}" class="btn btn-outline-light btn-sm me-2">
 Profile
 </a>
 
 <form method="POST" action="{{ route('logout') }}">
 @csrf
-
-<button
-type="submit"
-class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg text-sm">
+<button class="btn btn-warning btn-sm">
 Logout
 </button>
-
 </form>
 
 </div>
