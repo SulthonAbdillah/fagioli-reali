@@ -31,17 +31,17 @@ Add Product
 <tr>
 
 <td>
-@if($product->image)
-<img 
-    src="{{ $product->image }}" 
-    width="80" 
-    height="80"
-    style="object-fit: cover; border-radius: 8px;">
-@else
-<img 
-    src="{{ asset('images/no-image.jpg') }}" 
-    width="80">
-@endif
+    @if($product->image)
+        <img 
+            src="{{ $product->image }}" 
+            width="80" 
+            height="80"
+            style="object-fit: cover; border-radius: 8px;">
+    @else
+        <img 
+            src="/images/no-image.jpg" 
+            width="80">
+    @endif
 </td>
 
 <td>{{ $product->name }}</td>
