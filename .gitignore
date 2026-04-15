@@ -13,7 +13,6 @@ Thumbs.db
 # Laravel
 /vendor
 /node_modules
-/public/build
 /public/hot
 /public/storage
 

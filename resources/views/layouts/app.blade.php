@@ -66,11 +66,7 @@ $total = 0;
 
 @if($item['image'])
 
-<img src="{{ asset('storage/'.$item['image']) }}" width="60">
-
-@else
-
-<img src="{{ asset('images/no-image.jpg') }}" width="60">
+<img src="{{ $item['image'] }}" width="60">
 
 @endif
 
