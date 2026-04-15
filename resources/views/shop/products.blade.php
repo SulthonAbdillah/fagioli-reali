@@ -12,24 +12,28 @@
 
 <div class="col-md-4 mb-4">
 
-<div class="card h-100 shadow-sm">
+<div class="card h-100 shadow-sm border-0">
 
-<td>
-    @if($product->image)
-        <img src="{{ $product->image }}" width="80" height="80" style="object-fit: cover; border-radius: 8px;">
-    @else
-        <img src="{{ asset('images/no-image.jpg') }}" width="80">
-    @endif
-</td>
+@if($product->image)
+<img 
+    src="{{ $product->image }}" 
+    class="card-img-top"
+    style="height: 250px; object-fit: cover;">
+@else
+<img 
+    src="{{ asset('images/no-image.jpg') }}" 
+    class="card-img-top"
+    style="height: 250px; object-fit: cover;">
+@endif
 
 <div class="card-body text-center">
 
-<h5 class="card-title">
+<h5 class="card-title fw-bold">
 {{ $product->name }}
 </h5>
 
-<p class="card-text">
-{{ $product->description }}
+<p class="card-text text-muted">
+{{ $product->description ?? 'No description available' }}
 </p>
 
 <p class="mb-1">
@@ -41,13 +45,10 @@
 </p>
 
 <form action="{{ route('cart.add',$product->id) }}" method="POST">
-
 @csrf
-
-<button class="btn btn-dark">
+<button class="btn btn-dark w-100">
 <i class="bi bi-cart"></i> Add to Cart
 </button>
-
 </form>
 
 </div>

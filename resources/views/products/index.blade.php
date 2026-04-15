@@ -10,65 +10,71 @@
 Add Product
 </a>
 
-<div class="row">
+<div class="table-responsive">
+
+<table class="table table-bordered align-middle text-center">
+
+<thead class="table-dark">
+<tr>
+<th>Image</th>
+<th>Name</th>
+<th>Price</th>
+<th>Stock</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
 
 @foreach($products as $product)
 
-<div class="col-md-4 mb-4">
-
-<div class="card shadow-sm">
+<tr>
 
 <td>
-    @if($product->image)
-        <img src="{{ $product->image }}" width="80" height="80" style="object-fit: cover; border-radius: 8px;">
-    @else
-        <img src="{{ asset('images/no-image.jpg') }}" width="80">
-    @endif
+@if($product->image)
+<img 
+    src="{{ $product->image }}" 
+    width="80" 
+    height="80"
+    style="object-fit: cover; border-radius: 8px;">
+@else
+<img 
+    src="{{ asset('images/no-image.jpg') }}" 
+    width="80">
+@endif
 </td>
 
-<div class="card-body">
+<td>{{ $product->name }}</td>
 
-<h5>
-{{ $product->name }}
-</h5>
+<td>Rp {{ number_format($product->price) }}</td>
 
-<p>
-Rp {{ number_format($product->price) }}
-</p>
+<td>
+<span class="badge bg-secondary">
+{{ $product->stock }}
+</span>
+</td>
 
-<p>
-Stock: {{ $product->stock }}
-</p>
-
-<a
-href="/products/{{ $product->id }}/edit"
-class="btn btn-warning btn-sm">
-
+<td>
+<a href="/products/{{ $product->id }}/edit" class="btn btn-warning btn-sm">
 Edit
-
 </a>
 
-<form
-action="/products/{{ $product->id }}"
-method="POST"
-class="d-inline">
-
+<form action="/products/{{ $product->id }}" method="POST" class="d-inline">
 @csrf
 @method('DELETE')
-
 <button class="btn btn-danger btn-sm">
 Delete
 </button>
-
 </form>
+</td>
 
-</div>
-
-</div>
-
-</div>
+</tr>
 
 @endforeach
+
+</tbody>
+
+</table>
 
 </div>
 
