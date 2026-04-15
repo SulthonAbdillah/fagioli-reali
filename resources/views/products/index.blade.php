@@ -12,16 +12,16 @@ Add Product
 
 <div class="row">
 
-@foreach($products as $id => $product)
+@foreach($products as $product)
 
 <div class="col-md-4 mb-4">
 
 <div class="card shadow-sm">
 
-@if(isset($product['image']) && $product['image'])
+@if($product->image)
 
 <img
-src="{{ asset('storage/'.$product['image']) }}"
+src="{{ asset($product->image) }}"
 class="card-img-top">
 
 @else
@@ -32,23 +32,22 @@ class="card-img-top">
 
 @endif
 
-
 <div class="card-body">
 
 <h5>
-{{ $product['name'] ?? '-' }}
+{{ $product->name }}
 </h5>
 
 <p>
-Rp {{ number_format($product['price'] ?? 0) }}
+Rp {{ number_format($product->price) }}
 </p>
 
 <p>
-Stock: {{ $product['stock'] ?? 0 }}
+Stock: {{ $product->stock }}
 </p>
 
 <a
-href="/products/{{ $id }}/edit"
+href="/products/{{ $product->id }}/edit"
 class="btn btn-warning btn-sm">
 
 Edit
@@ -56,7 +55,7 @@ Edit
 </a>
 
 <form
-action="/products/{{ $id }}"
+action="/products/{{ $product->id }}"
 method="POST"
 class="d-inline">
 

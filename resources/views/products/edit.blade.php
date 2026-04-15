@@ -14,7 +14,7 @@ Product not found
 
 @else
 
-<form action="/products/{{ $id }}/update" method="POST" enctype="multipart/form-data">
+<form action="/products/{{ $product->id }}/update" method="POST" enctype="multipart/form-data">
 
 @csrf
 
@@ -26,11 +26,10 @@ Product not found
 type="text"
 name="name"
 class="form-control"
-value="{{ $product['name'] ?? '' }}"
+value="{{ $product->name }}"
 required>
 
 </div>
-
 
 <div class="mb-3">
 
@@ -40,11 +39,10 @@ required>
 type="number"
 name="price"
 class="form-control"
-value="{{ $product['price'] ?? 0 }}"
+value="{{ $product->price }}"
 required>
 
 </div>
-
 
 <div class="mb-3">
 
@@ -54,11 +52,10 @@ required>
 type="number"
 name="stock"
 class="form-control"
-value="{{ $product['stock'] ?? 0 }}"
+value="{{ $product->stock }}"
 required>
 
 </div>
-
 
 <div class="mb-3">
 
@@ -71,16 +68,14 @@ class="form-control">
 
 </div>
 
-
-@if(isset($product['image']) && $product['image'])
+@if($product->image)
 
 <img
-src="{{ asset('storage/'.$product['image']) }}"
+src="{{ asset($product->image) }}"
 width="120"
 class="mb-3">
 
 @endif
-
 
 <button class="btn btn-coffee">
 Update Product

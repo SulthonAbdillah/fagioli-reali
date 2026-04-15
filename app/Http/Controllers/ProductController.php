@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
-use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -52,10 +51,17 @@ class ProductController extends Controller
 
         $imagePath = null;
 
+        // 🔥 SIMPAN KE PUBLIC (BUKAN STORAGE)
         if ($request->hasFile('image')) {
+
             $file = $request->file('image');
-            $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
-            $imagePath = $file->storeAs('products', $filename, 'public');
+
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+
+            // simpan ke public/products
+            $file->move(public_path('products'), $filename);
+
+            $imagePath = 'products/' . $filename;
         }
 
         Product::create([
@@ -101,10 +107,16 @@ class ProductController extends Controller
             'description' => $request->description
         ];
 
+        // 🔥 UPDATE GAMBAR BARU
         if ($request->hasFile('image')) {
+
             $file = $request->file('image');
-            $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
-            $data['image'] = $file->storeAs('products', $filename, 'public');
+
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+
+            $file->move(public_path('products'), $filename);
+
+            $data['image'] = 'products/' . $filename;
         }
 
         $product->update($data);
@@ -121,4 +133,5 @@ class ProductController extends Controller
 
         return redirect('/admin')->with('success', 'Product deleted successfully');
     }
+
 }

@@ -2,44 +2,52 @@
 
 @section('content')
 
-<section class="section product-section">
+<div class="container py-5">
 
-<div class="container">
+<h2 class="text-center mb-5">Our Coffee Products</h2>
 
-<h2 class="section-title">
-Our <span>Coffee</span>
-</h2>
-
-<div class="row g-4">
+<div class="row">
 
 @foreach($products as $product)
 
-<div class="col-lg-4 col-md-6">
+<div class="col-md-4 mb-4">
 
-<div class="product-card">
+<div class="card h-100 shadow-sm">
 
-<div class="product-img">
+@if($product->image)
 
-<img src="{{ asset('storage/'.$product->image) }}">
+<img src="{{ asset($product->image) }}" class="card-img-top">
 
-</div>
+@else
 
-<div class="card-body">
+<img src="{{ asset('images/no-image.jpg') }}" class="card-img-top">
 
-<h5 class="product-name">
+@endif
+
+<div class="card-body text-center">
+
+<h5 class="card-title">
 {{ $product->name }}
 </h5>
 
-<p class="price">
-Rp {{ number_format($product->price) }}
+<p class="card-text">
+{{ $product->description }}
+</p>
+
+<p class="mb-1">
+<strong>Price:</strong> Rp {{ number_format($product->price) }}
+</p>
+
+<p class="mb-3">
+<strong>Stock:</strong> {{ $product->stock }}
 </p>
 
 <form action="{{ route('cart.add',$product->id) }}" method="POST">
 
 @csrf
 
-<button class="btn btn-coffee w-100">
-Tambah ke Keranjang
+<button class="btn btn-dark">
+<i class="bi bi-cart"></i> Add to Cart
 </button>
 
 </form>
@@ -55,7 +63,5 @@ Tambah ke Keranjang
 </div>
 
 </div>
-
-</section>
 
 @endsection
