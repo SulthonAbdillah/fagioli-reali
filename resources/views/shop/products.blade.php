@@ -8,15 +8,15 @@
 
 <div class="row">
 
-@foreach($products as $key => $product)
+@foreach($products as $product)
 
 <div class="col-md-4 mb-4">
 
 <div class="card h-100 shadow-sm">
 
-@if(isset($product['image']) && $product['image'] != '')
+@if($product->image)
 
-<img src="{{ asset('storage/'.$product['image']) }}" class="card-img-top">
+<img src="{{ asset('storage/'.$product->image) }}" class="card-img-top">
 
 @else
 
@@ -27,22 +27,22 @@
 <div class="card-body text-center">
 
 <h5 class="card-title">
-{{ $product['name'] ?? 'Coffee Product' }}
+{{ $product->name }}
 </h5>
 
 <p class="card-text">
-{{ $product['description'] ?? '' }}
+{{ $product->description }}
 </p>
 
 <p class="mb-1">
-<strong>Price:</strong> Rp {{ number_format($product['price'] ?? 0) }}
+<strong>Price:</strong> Rp {{ number_format($product->price) }}
 </p>
 
 <p class="mb-3">
-<strong>Stock:</strong> {{ $product['stock'] ?? 0 }}
+<strong>Stock:</strong> {{ $product->stock }}
 </p>
 
-<form action="{{ route('cart.add',$key) }}" method="POST">
+<form action="{{ route('cart.add',$product->id) }}" method="POST">
 
 @csrf
 

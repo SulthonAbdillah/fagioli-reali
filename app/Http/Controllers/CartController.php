@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class CartController extends Controller
 {
@@ -10,11 +11,7 @@ class CartController extends Controller
     // SHOP PAGE
     public function shop()
     {
-        $database = app('firebase.database');
-
-        $products = $database
-            ->getReference('products')
-            ->getValue() ?? [];
+        $products = Product::all();
 
         return view('shop.index', compact('products'));
     }
@@ -23,11 +20,7 @@ class CartController extends Controller
     // ADD TO CART
     public function addToCart($id)
     {
-        $database = app('firebase.database');
-
-        $product = $database
-            ->getReference('products/' . $id)
-            ->getValue();
+        $product = Product::find($id);
 
         if(!$product){
             return redirect()->back();
@@ -42,9 +35,9 @@ class CartController extends Controller
         } else {
 
             $cart[$id] = [
-                "name" => $product['name'],
-                "price" => $product['price'],
-                "image" => $product['image'] ?? null,
+                "name" => $product->name,
+                "price" => $product->price,
+                "image" => $product->image,
                 "quantity" => 1
             ];
         }
@@ -55,7 +48,7 @@ class CartController extends Controller
     }
 
 
-    // CART PAGE (optional)
+    // CART PAGE
     public function cart()
     {
         $cart = session()->get('cart', []);
