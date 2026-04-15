@@ -4,41 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
 
-    // ===============================
-    // ADMIN PRODUCT LIST
-    // ===============================
     public function index()
     {
         $products = Product::latest()->get();
-
         return view('products.index', compact('products'));
     }
 
-    // ===============================
-    // USER PRODUCT CATALOG
-    // ===============================
     public function catalog()
     {
         $products = Product::all();
-
         return view('shop.products', compact('products'));
     }
 
-    // ===============================
-    // CREATE PAGE
-    // ===============================
     public function create()
     {
         return view('products.create');
     }
 
-    // ===============================
-    // STORE
-    // ===============================
     public function store(Request $request)
     {
         $request->validate([
@@ -51,14 +38,13 @@ class ProductController extends Controller
 
         $imagePath = null;
 
-        // 🔥 SIMPAN KE PUBLIC (BUKAN STORAGE)
         if ($request->hasFile('image')) {
 
             $file = $request->file('image');
 
-            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
 
-            // simpan ke public/products
+            // 🔥 SIMPAN KE PUBLIC LANGSUNG
             $file->move(public_path('products'), $filename);
 
             $imagePath = 'products/' . $filename;
@@ -75,19 +61,12 @@ class ProductController extends Controller
         return redirect('/admin')->with('success', 'Product created successfully');
     }
 
-    // ===============================
-    // EDIT
-    // ===============================
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-
         return view('products.edit', compact('product'));
     }
 
-    // ===============================
-    // UPDATE
-    // ===============================
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -107,12 +86,11 @@ class ProductController extends Controller
             'description' => $request->description
         ];
 
-        // 🔥 UPDATE GAMBAR BARU
         if ($request->hasFile('image')) {
 
             $file = $request->file('image');
 
-            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
 
             $file->move(public_path('products'), $filename);
 
@@ -124,14 +102,9 @@ class ProductController extends Controller
         return redirect('/admin')->with('success', 'Product updated successfully');
     }
 
-    // ===============================
-    // DELETE
-    // ===============================
     public function destroy($id)
     {
         Product::destroy($id);
-
         return redirect('/admin')->with('success', 'Product deleted successfully');
     }
-
 }
