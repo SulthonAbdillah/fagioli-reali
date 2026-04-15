@@ -24,7 +24,6 @@ Admin Dashboard
 
 </div>
 
-
 @if(session('success'))
 
 <div class="alert alert-success">
@@ -32,7 +31,6 @@ Admin Dashboard
 </div>
 
 @endif
-
 
 <div class="card shadow-sm">
 
@@ -47,13 +45,11 @@ Admin Dashboard
 <thead class="table-light">
 
 <tr>
-
 <th>Image</th>
 <th>Name</th>
 <th>Price</th>
 <th>Stock</th>
 <th width="200">Actions</th>
-
 </tr>
 
 </thead>
@@ -70,14 +66,17 @@ Admin Dashboard
 
 @if($product->image)
 
-<img src="{{ asset('storage/'.$product->image) }}"
-width="60"
-class="rounded">
+<img 
+    src="{{ $product->image }}"
+    width="60"
+    height="60"
+    style="object-fit: cover; border-radius: 8px;">
 
 @else
 
-<img src="https://via.placeholder.com/60"
-class="rounded">
+<img 
+    src="https://via.placeholder.com/60"
+    class="rounded">
 
 @endif
 
