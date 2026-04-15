@@ -18,15 +18,13 @@ Add Product
 
 <div class="card shadow-sm">
 
-@if($product->image)
-
-<img src="{{ $product->image }}" class="card-img-top">
-
-@else
-
-<img src="{{ asset('images/no-image.jpg') }}" class="card-img-top">
-
-@endif
+<td>
+    @if($product->image)
+        <img src="{{ $product->image }}" width="80" height="80" style="object-fit: cover; border-radius: 8px;">
+    @else
+        <img src="{{ asset('images/no-image.jpg') }}" width="80">
+    @endif
+</td>
 
 <div class="card-body">
 
