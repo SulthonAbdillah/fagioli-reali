@@ -4,10 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
-use Illuminate\Support\Str;
+use Cloudinary\Cloudinary;
 
 class ProductController extends Controller
 {
+    protected $cloudinary;
+
+    public function __construct()
+    {
+        $this->cloudinary = new Cloudinary([
+            'cloud' => [
+                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                'api_key'    => env('CLOUDINARY_API_KEY'),
+                'api_secret' => env('CLOUDINARY_API_SECRET'),
+            ],
+        ]);
+    }
 
     public function index()
     {
@@ -36,18 +48,14 @@ class ProductController extends Controller
             'image' => 'nullable|image'
         ]);
 
-        $imagePath = null;
+        $imageUrl = null;
 
         if ($request->hasFile('image')) {
+            $upload = $this->cloudinary->uploadApi()->upload(
+                $request->file('image')->getRealPath()
+            );
 
-            $file = $request->file('image');
-
-            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-
-            // 🔥 SIMPAN KE PUBLIC LANGSUNG
-            $file->move(public_path('products'), $filename);
-
-            $imagePath = 'products/' . $filename;
+            $imageUrl = $upload['secure_url'];
         }
 
         Product::create([
@@ -55,7 +63,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'stock' => $request->stock,
             'description' => $request->description,
-            'image' => $imagePath
+            'image' => $imageUrl
         ]);
 
         return redirect('/admin')->with('success', 'Product created successfully');
@@ -87,14 +95,11 @@ class ProductController extends Controller
         ];
 
         if ($request->hasFile('image')) {
+            $upload = $this->cloudinary->uploadApi()->upload(
+                $request->file('image')->getRealPath()
+            );
 
-            $file = $request->file('image');
-
-            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-
-            $file->move(public_path('products'), $filename);
-
-            $data['image'] = 'products/' . $filename;
+            $data['image'] = $upload['secure_url'];
         }
 
         $product->update($data);

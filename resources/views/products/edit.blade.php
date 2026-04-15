@@ -70,10 +70,7 @@ class="form-control">
 
 @if($product->image)
 
-<img
-src="{{ asset($product->image) }}"
-width="120"
-class="mb-3">
+<img src="{{ $product->image }}" width="120" class="mb-3">
 
 @endif
 

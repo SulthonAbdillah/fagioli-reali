@@ -20,15 +20,11 @@ Add Product
 
 @if($product->image)
 
-<img
-src="{{ asset($product->image) }}"
-class="card-img-top">
+<img src="{{ $product->image }}" class="card-img-top">
 
 @else
 
-<img
-src="{{ asset('images/no-image.jpg') }}"
-class="card-img-top">
+<img src="{{ asset('images/no-image.jpg') }}" class="card-img-top">
 
 @endif
 
