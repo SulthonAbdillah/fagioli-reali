@@ -4,42 +4,41 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Str;
 use Cloudinary\Cloudinary;
 
 class ProductController extends Controller
 {
-    protected $cloudinary;
 
-    public function __construct()
-    {
-        $this->cloudinary = new Cloudinary([
-            'cloud' => [
-                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                'api_key'    => env('CLOUDINARY_API_KEY'),
-                'api_secret' => env('CLOUDINARY_API_SECRET'),
-            ],
-        ]);
-    }
-
+    // ===============================
+    // ADMIN PRODUCT LIST
+    // ===============================
     public function index()
     {
         $products = Product::latest()->get();
         return view('products.index', compact('products'));
     }
 
+    // ===============================
+    // USER PRODUCT CATALOG
+    // ===============================
     public function catalog()
     {
         $products = Product::all();
         return view('shop.products', compact('products'));
     }
 
+    // ===============================
+    // CREATE PAGE
+    // ===============================
     public function create()
     {
-        dd(env('CLOUDINARY_CLOUD_NAME'));
-
         return view('products.create');
     }
 
+    // ===============================
+    // STORE
+    // ===============================
     public function store(Request $request)
     {
         $request->validate([
@@ -52,8 +51,18 @@ class ProductController extends Controller
 
         $imageUrl = null;
 
+        // 🔥 INIT CLOUDINARY DI SINI (BUKAN DI CONSTRUCTOR)
         if ($request->hasFile('image')) {
-            $upload = $this->cloudinary->uploadApi()->upload(
+
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => config('cloudinary.cloud_name'),
+                    'api_key'    => config('cloudinary.api_key'),
+                    'api_secret' => config('cloudinary.api_secret'),
+                ],
+            ]);
+
+            $upload = $cloudinary->uploadApi()->upload(
                 $request->file('image')->getRealPath()
             );
 
@@ -71,12 +80,18 @@ class ProductController extends Controller
         return redirect('/admin')->with('success', 'Product created successfully');
     }
 
+    // ===============================
+    // EDIT
+    // ===============================
     public function edit($id)
     {
         $product = Product::findOrFail($id);
         return view('products.edit', compact('product'));
     }
 
+    // ===============================
+    // UPDATE
+    // ===============================
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -97,7 +112,16 @@ class ProductController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $upload = $this->cloudinary->uploadApi()->upload(
+
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => config('cloudinary.cloud_name'),
+                    'api_key'    => config('cloudinary.api_key'),
+                    'api_secret' => config('cloudinary.api_secret'),
+                ],
+            ]);
+
+            $upload = $cloudinary->uploadApi()->upload(
                 $request->file('image')->getRealPath()
             );
 
@@ -109,6 +133,9 @@ class ProductController extends Controller
         return redirect('/admin')->with('success', 'Product updated successfully');
     }
 
+    // ===============================
+    // DELETE
+    // ===============================
     public function destroy($id)
     {
         Product::destroy($id);
