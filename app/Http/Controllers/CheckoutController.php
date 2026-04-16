@@ -66,9 +66,42 @@ class CheckoutController extends Controller
         | KIRIM EMAIL
         |--------------------------------------------------------------------------
         */
-        Mail::to($user->email)->send(
-            new OrderInvoice($cart, $total)
-        );
+        use App\Services\BrevoMailService;
+
+        public function checkout(Request $request)
+        {
+            $cart = session()->get('cart', []);
+
+            if (empty($cart)) {
+                return redirect()->route('products.catalog')
+                    ->with('error', 'Cart kosong');
+            }
+
+            $user = Auth::user();
+            $total = 0;
+
+            foreach ($cart as $item) {
+                $total += $item['price'] * $item['quantity'];
+            }
+
+            foreach ($cart as $id => $item) {
+                $product = Product::find($id);
+
+                if ($product) {
+                    $newStock = max(0, $product->stock - $item['quantity']);
+                    $product->update(['stock' => $newStock]);
+                }
+            }
+
+            // KIRIM EMAIL VIA API
+            $brevo = new BrevoMailService();
+            $brevo->sendInvoice($user->email, $user->name, $cart, $total);
+
+            session()->forget('cart');
+
+            return redirect()->route('home')
+                ->with('success', 'Checkout berhasil! Invoice dikirim.');
+        }
 
         /*
         |--------------------------------------------------------------------------
