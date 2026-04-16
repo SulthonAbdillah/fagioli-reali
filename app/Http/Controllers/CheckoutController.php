@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\Product;
 use App\Services\BrevoMailService;
 
@@ -54,6 +55,27 @@ class CheckoutController extends Controller
 
         /*
         |------------------------------------------------------------------
+        | SIMPAN ORDER KE FIREBASE
+        |------------------------------------------------------------------
+        */
+        try {
+            $database = app('firebase.database');
+
+            $database->getReference('orders')->push([
+                'user_name' => $user->name,
+                'email' => $user->email,
+                'items' => $cart,
+                'total' => $total,
+                'created_at' => now()->toDateTimeString()
+            ]);
+
+        } catch (\Exception $e) {
+            // tidak menggagalkan checkout
+            Log::error('Firebase Error: ' . $e->getMessage());
+        }
+
+        /*
+        |------------------------------------------------------------------
         | KIRIM EMAIL (BREVO API)
         |------------------------------------------------------------------
         */
@@ -66,7 +88,8 @@ class CheckoutController extends Controller
                 $total
             );
         } catch (\Exception $e) {
-            // supaya checkout tetap jalan walau email gagal
+            Log::error('Email Error: ' . $e->getMessage());
+
             return redirect()->route('home')
                 ->with('error', 'Checkout berhasil, tapi email gagal dikirim');
         }
