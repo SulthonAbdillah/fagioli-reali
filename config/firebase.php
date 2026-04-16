@@ -10,18 +10,16 @@ return [
         'app' => [
 
             /*
-             * 🔥 FIX UTAMA: Pakai ENV JSON (bukan file)
+             * ✅ FIX: langsung pakai JSON ENV
              */
-            'credentials' => [
-                'file' => env('FIREBASE_CREDENTIALS_JSON'),
-            ],
+            'credentials' => env('FIREBASE_CREDENTIALS'),
 
             'auth' => [
                 'tenant_id' => env('FIREBASE_AUTH_TENANT_ID'),
             ],
 
             'firestore' => [
-                // 'database' => env('FIREBASE_FIRESTORE_DATABASE'),
+                // optional
             ],
 
             'database' => [
@@ -46,5 +44,4 @@ return [
             ],
         ],
     ],
-
 ];
