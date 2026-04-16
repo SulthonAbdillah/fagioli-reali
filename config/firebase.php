@@ -12,7 +12,9 @@ return [
             /*
              * ✅ FIX: langsung pakai JSON ENV
              */
-            'credentials' => env('FIREBASE_CREDENTIALS'),
+            'credentials' => [
+                'file' => env('FIREBASE_CREDENTIALS_JSON'),
+            ],
 
             'auth' => [
                 'tenant_id' => env('FIREBASE_AUTH_TENANT_ID'),
