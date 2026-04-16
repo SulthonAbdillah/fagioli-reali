@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\OrderInvoice;
 use App\Models\Product;
+use App\Services\BrevoMailService;
 
 class CheckoutController extends Controller
 {
@@ -66,7 +67,6 @@ class CheckoutController extends Controller
         | KIRIM EMAIL
         |--------------------------------------------------------------------------
         */
-        use App\Services\BrevoMailService;
 
         public function checkout(Request $request)
         {
