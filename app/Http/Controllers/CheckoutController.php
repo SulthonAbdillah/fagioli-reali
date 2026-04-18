@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
+use App\Models\Order;
 use App\Services\BrevoMailService;
 
 class CheckoutController extends Controller
@@ -14,11 +15,6 @@ class CheckoutController extends Controller
     {
         $cart = session()->get('cart', []);
 
-        /*
-        |------------------------------------------------------------------
-        | CEK CART
-        |------------------------------------------------------------------
-        */
         if (empty($cart)) {
             return redirect()->route('products.catalog')
                 ->with('error', 'Cart kosong');
@@ -27,58 +23,40 @@ class CheckoutController extends Controller
         $user = Auth::user();
         $total = 0;
 
-        /*
-        |------------------------------------------------------------------
-        | HITUNG TOTAL
-        |------------------------------------------------------------------
-        */
+        // HITUNG TOTAL
         foreach ($cart as $item) {
             $total += $item['price'] * $item['quantity'];
         }
 
-        /*
-        |------------------------------------------------------------------
-        | UPDATE STOCK
-        |------------------------------------------------------------------
-        */
+        // UPDATE STOCK
         foreach ($cart as $id => $item) {
             $product = Product::find($id);
 
             if ($product) {
-                $newStock = max(0, $product->stock - $item['quantity']);
-
                 $product->update([
-                    'stock' => $newStock
+                    'stock' => max(0, $product->stock - $item['quantity'])
                 ]);
             }
         }
 
         /*
-        |------------------------------------------------------------------
-        | SIMPAN ORDER KE FIREBASE
-        |------------------------------------------------------------------
+        |--------------------------------------------------
+        | 🔥 SIMPAN KE MYSQL (INI YANG PENTING)
+        |--------------------------------------------------
         */
         try {
-            $database = app('firebase.database');
-
-            $database->getReference('orders')->push([
+            Order::create([
+                'user_id'   => $user->id,
                 'user_name' => $user->name,
-                'email' => $user->email,
-                'items' => $cart,
-                'total' => $total,
-                'created_at' => now()->toDateTimeString()
+                'email'     => $user->email,
+                'total'     => $total,
+                'items'     => $cart,
             ]);
-
         } catch (\Exception $e) {
-            // tidak menggagalkan checkout
-            Log::error('Firebase Error: ' . $e->getMessage());
+            Log::error('DB Order Error: ' . $e->getMessage());
         }
 
-        /*
-        |------------------------------------------------------------------
-        | KIRIM EMAIL (BREVO API)
-        |------------------------------------------------------------------
-        */
+        // KIRIM EMAIL
         try {
             $brevo = new BrevoMailService();
             $brevo->sendInvoice(
@@ -94,18 +72,9 @@ class CheckoutController extends Controller
                 ->with('error', 'Checkout berhasil, tapi email gagal dikirim');
         }
 
-        /*
-        |------------------------------------------------------------------
-        | CLEAR CART
-        |------------------------------------------------------------------
-        */
+        // CLEAR CART
         session()->forget('cart');
 
-        /*
-        |------------------------------------------------------------------
-        | REDIRECT
-        |------------------------------------------------------------------
-        */
         return redirect()->route('home')
             ->with('success', 'Checkout berhasil! Invoice dikirim.');
     }

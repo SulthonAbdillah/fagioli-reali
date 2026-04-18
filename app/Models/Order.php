@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Order extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'user_name',
+        'email',
+        'total',
+        'items'
+    ];
+
+    protected $casts = [
+        'items' => 'array'
+    ];
+}
